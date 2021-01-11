@@ -13,11 +13,11 @@ const ISSUER = process.env.APP_NAME;
 
 // Init plugins
 const db = sql.init();
-auth.config(SECRET, ISSUER);
+auth.config(db, SECRET, ISSUER);
 
 // Declare routes
 const login = require('./api/login')(SECRET, ISSUER);
-const users = require('./api/users')();
+const users = require('./api/users')(db);
 const lessons = require('./api/lessons')();
 const subjects = require('./api/subjects')();
 

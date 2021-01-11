@@ -3,8 +3,15 @@ const LocalStrategy = require('passport-local').Strategy;
 const JWTStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const jwt = require('jsonwebtoken');
+const sql = require('../utils/sql');
+const sha1 = require('sha1');
 
-const config = (SECRET, ISSUER) => {
+const SQL_AUTHENTICATE =
+	'SELECT count(*) as auth FROM users WHERE username = ? AND password = ?';
+
+const config = async (db, SECRET, ISSUER) => {
+	const getAuth = sql.mkQuery(SQL_AUTHENTICATE, db);
+
 	// Declare JWT auth strat
 	let opts = {
 		jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -26,13 +33,14 @@ const config = (SECRET, ISSUER) => {
 			},
 			async (user, pwd, done) => {
 				//do auth here
-				const res = { auth: true };
-				if (res.auth)
+				const [res] = await getAuth([user, sha1(pwd)]);
+				if (res.auth) {
+					console.log('here');
 					done(null, {
 						username: user,
 						logintime: new Date(),
 					});
-				else done('salah logins', false);
+				} else done('salah logins', false);
 			}
 		)
 	);
@@ -44,7 +52,7 @@ const makeJWT = (user, issuer, secret) => {
 			sub: user, // subject
 			iss: issuer, // issuer
 			iat: new Date().getTime() / 1000, // issue time
-			exp: new Date().getTime() / 1000 + 60, // token expiry in seconds
+			exp: new Date().getTime() / 1000 + 10000000, // token expiry in seconds
 		},
 		secret
 	);
