@@ -14,7 +14,6 @@
     dob: date
     subjects: number[]
     roles: number
-    billing_method: number
 }
 ```
 

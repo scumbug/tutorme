@@ -2,30 +2,36 @@
 const express = require('express');
 const morgan = require('morgan');
 const sql = require('./utils/sql');
+const auth = require('./utils/auth');
+
 require('dotenv').config();
 
-// Declare port
+// Declare port and constants
 const PORT = parseInt(process.argv[2]) || parseInt(process.env.PORT) || 3000;
+const SECRET = process.env.JWT_SECRET;
+const ISSUER = process.env.APP_NAME;
 
 // Init plugins
 const db = sql.init();
+auth.config(SECRET, ISSUER);
 
 // Declare routes
-const auth = require('./api/auth')(db, '/v1');
-const users = require('./api/users');
-const lessons = require('./api/lessons');
-const subjects = require('./api/subjects');
+const login = require('./api/login')(SECRET, ISSUER);
+const users = require('./api/users')();
+const lessons = require('./api/lessons')();
+const subjects = require('./api/subjects')();
 
 // Create app instance
 const app = express();
 
 // Init middleware
 app.use(morgan('tiny'));
+app.use(auth.init());
 
 //
 // Endpoints
 //
-app.use('/v1', auth);
+app.use('/v1', login);
 app.use('/v1', users);
 app.use('/v1', lessons);
 app.use('/v1', subjects);
