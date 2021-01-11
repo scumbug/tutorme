@@ -4,10 +4,9 @@ const JWTStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const jwt = require('jsonwebtoken');
 const sql = require('../utils/sql');
-const sha1 = require('sha1');
 
 const SQL_AUTHENTICATE =
-	'SELECT count(*) as auth FROM users WHERE username = ? AND password = ?';
+	'SELECT count(*) as auth FROM users WHERE username = ? AND password = sha1(?)';
 
 const config = async (db, SECRET, ISSUER) => {
 	const getAuth = sql.mkQuery(SQL_AUTHENTICATE, db);
@@ -33,8 +32,8 @@ const config = async (db, SECRET, ISSUER) => {
 			},
 			async (user, pwd, done) => {
 				//do auth here
-				const [res] = await getAuth([user, sha1(pwd)]);
-				if (res.auth) {
+				const [flag] = await getAuth([user, pwd]);
+				if (flag.auth) {
 					console.log('here');
 					done(null, {
 						username: user,
