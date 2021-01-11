@@ -18,8 +18,8 @@ auth.config(db, SECRET, ISSUER);
 // Declare routes
 const login = require('./api/login')(SECRET, ISSUER);
 const users = require('./api/users')(db);
-const lessons = require('./api/lessons')();
-const subjects = require('./api/subjects')();
+const lessons = require('./api/lessons')(db);
+const subjects = require('./api/subjects')(db);
 
 // Create app instance
 const app = express();

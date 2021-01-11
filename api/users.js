@@ -18,12 +18,13 @@ module.exports = (db) => {
 	const dupUserCheck = sql.mkQuery(SQL_UNIQ_USER, db);
 	const updateUser = sql.mkQuery(SQL_UPDATE_USER, db);
 
+	// GET retreive all users
 	router.get('/users', auth.authenticate('jwt'), async (req, res) => {
 		// Pull all users from db
 		try {
 			const result = await getUsers();
 			if (!!result.length) {
-				res.status(200).json(await getUsers());
+				res.status(200).json(result);
 			} else {
 				res.status(404).json({ message: 'No users in database!' });
 			}
@@ -32,6 +33,32 @@ module.exports = (db) => {
 		}
 	});
 
+	// POST add new user
+	router.post(
+		'/users',
+		express.json(),
+		auth.authenticate('jwt'),
+		async (req, res) => {
+			// Create new user
+			let payload = req.body;
+			payload.password = sha1(payload.password);
+
+			// Generate payload
+			try {
+				const [flag] = await dupUserCheck(payload.username);
+				if (flag.dup > 0) {
+					res.status(403).json({ message: 'Duplicated username!' });
+				} else {
+					const result = await insertUser(payload);
+					res.status(200).json({ message: 'User created successfully' });
+				}
+			} catch (e) {
+				res.status(500).json(e);
+			}
+		}
+	);
+
+	// GET retreive single user
 	router.get('/users/:id', auth.authenticate('jwt'), async (req, res) => {
 		// Pull all users from db
 		try {
@@ -44,49 +71,19 @@ module.exports = (db) => {
 		}
 	});
 
-	router.post(
-		'/users/create',
-		express.json(),
-		auth.authenticate('jwt'),
-		async (req, res) => {
-			// Create new user
-			let payload = req.body;
-			payload.password = sha1(payload.password);
-			console.log(payload);
-
-			// Generate payload
-			try {
-				const [flag] = await dupUserCheck(payload.username);
-				console.log(flag);
-				if (flag.dup > 0) {
-					res.status(403).json({ message: 'Duplicated username!' });
-				} else {
-					const result = await insertUser(payload);
-					console.log(result);
-					res.status(200).json({ message: 'User created successfully' });
-				}
-			} catch (e) {
-				res.status(500).json(e);
-			}
-		}
-	);
-
+	// PUT update new user
 	router.put(
 		'/users/:id',
 		express.json(),
 		auth.authenticate('jwt'),
 		async (req, res) => {
-			// TODO
-			// Update new user
-
 			// Generate payload
 			let payload = req.body;
+			delete payload.username;
 			payload.password = sha1(payload.password);
-			console.log(payload);
 
 			try {
 				res.status(200).json(await updateUser([payload, req.params.id]));
-				res.end();
 			} catch (e) {
 				res.status(500).json(e);
 			}
