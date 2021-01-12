@@ -1,0 +1,45 @@
+<full-calendar [options]="calendarOptions" #calendar></full-calendar>
+
+<ng-template #content let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Profile update</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]='lessonForm'>
+
+            <h3>Create a Lesson for {{ this.lessonForm.get('date').value}}</h3>
+
+            <div class="form-group">
+                <label for="title">Title: </label>
+                <select class="form-control" id="title" formControlName="title">
+                    <option *ngFor="let title of titles" [value]="title.id">{{title.name}} - {{title.level}}</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="tutee">Tutee</label>
+                <select class="form-control" id="tutee" formControlName="tutee">
+                    <option *ngFor="let tutee of tutees" [value]="tutee.id">{{tutee.name}}
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="start">Start</label>
+                <ngb-timepicker [meridian]="true" formControlName="startTime"></ngb-timepicker>
+            </div>
+
+            <div class="form-group">
+                <label for="end">End</label>
+                <ngb-timepicker [meridian]="true" formControlName="endTime"></ngb-timepicker>
+            </div>
+
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('submit')">Save</button>
+    </div>
+</ng-template>
