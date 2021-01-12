@@ -5,7 +5,7 @@ module.exports = (SECRET, ISSUER) => {
 	const router = express.Router();
 
 	// Authenticate user/pass and generate token
-	router.get(
+	router.post(
 		'/login',
 		express.json(),
 		auth.authenticate('local'),

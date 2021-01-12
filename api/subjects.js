@@ -1,6 +1,6 @@
 const express = require('express');
 const sql = require('../utils/sql');
-const auth = require('../utils/auth')
+const auth = require('../utils/auth');
 
 const SQL_GET_SUBJECTS = 'SELECT * FROM subjects';
 const SQL_GET_SUBJECT = 'SELECT * FROM subjects WHERE id = ?';
@@ -12,13 +12,13 @@ module.exports = (db) => {
 	const router = express.Router();
 
 	const getSubjects = sql.mkQuery(SQL_GET_SUBJECTS, db);
-	const getSubject = sql.mkQuery(SQL_GET_SUBJECT,db)
-	const dupSubCheck = sql.mkQuery(SQL_UNIQ_SUBJECT,db)
-	const insertSubject = sql.mkQuery(SQL_INSERT_SUBJECT,db)
-	const updateSubject = sql.mkQuery(SQL_UPDATE_SUBJECT,db)
+	const getSubject = sql.mkQuery(SQL_GET_SUBJECT, db);
+	const dupSubCheck = sql.mkQuery(SQL_UNIQ_SUBJECT, db);
+	const insertSubject = sql.mkQuery(SQL_INSERT_SUBJECT, db);
+	const updateSubject = sql.mkQuery(SQL_UPDATE_SUBJECT, db);
 
 	// GET all subjects
-	router.get('/subjects', auth.authenticate('jwt'), (req, res) => {
+	router.get('/subjects', auth.authenticate('jwt'), async (req, res) => {
 		try {
 			const result = await getSubjects();
 			if (!!result.length) {
@@ -32,7 +32,7 @@ module.exports = (db) => {
 	});
 
 	// GET one subject
-	router.get('/subjects/:id', auth.authenticate('jwt'), (req, res) => {
+	router.get('/subjects/:id', auth.authenticate('jwt'), async (req, res) => {
 		try {
 			const result = await getSubject([req.params.id]);
 			if (!!result.length) {
@@ -44,7 +44,6 @@ module.exports = (db) => {
 			res.status(500).json(e);
 		}
 	});
-
 
 	// POST create new subject
 	router.post(
