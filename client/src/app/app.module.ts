@@ -16,6 +16,10 @@ import { FullCalendarModule } from '@fullcalendar/angular'; // the main connecto
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { HttpService } from './http.service';
+import { SubjectsComponent } from './components/subjects/subjects.component';
+
+import { NgxBootstrapIconsModule } from 'ngx-bootstrap-icons';
+import { plusSquare, trash2, pencilSquare } from 'ngx-bootstrap-icons';
 
 FullCalendarModule.registerPlugins([
   // register FullCalendar plugins
@@ -30,6 +34,7 @@ FullCalendarModule.registerPlugins([
     LandingComponent,
     LessonsComponent,
     ProfileComponent,
+    SubjectsComponent,
   ],
   imports: [
     BrowserModule,
@@ -39,6 +44,7 @@ FullCalendarModule.registerPlugins([
     FormsModule,
     ReactiveFormsModule,
     FullCalendarModule,
+    NgxBootstrapIconsModule.pick({ plusSquare, trash2, pencilSquare }),
   ],
   providers: [AuthService, HttpService],
   bootstrap: [AppComponent],

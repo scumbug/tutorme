@@ -22,3 +22,10 @@ export interface User {
   address: string;
   dob: Date;
 }
+
+export interface Subject {
+  id?: number;
+  name: string;
+  level: string;
+  fees: number;
+}

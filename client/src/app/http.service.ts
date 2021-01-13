@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
-import { Title, User } from './model.interface';
+import { Subject, Title, User } from './model.interface';
 
 @Injectable()
 export class HttpService {
@@ -55,6 +55,12 @@ export class HttpService {
         headers: this.headers,
         observe: 'response',
       })
+      .toPromise();
+  }
+
+  async getSubjects(): Promise<Subject[]> {
+    return await this.http
+      .get<any>('/v1/subjects', { headers: this.headers })
       .toPromise();
   }
 }

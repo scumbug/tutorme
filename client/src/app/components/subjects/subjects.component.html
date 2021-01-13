@@ -1,0 +1,29 @@
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Level</th>
+            <th scope="col">Fees</th>
+            <th scope="col">
+                <i-bs name="plus-square"></i-bs>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let subject of subjects; index as i">
+            <td>
+                {{ subject.name }}
+            </td>
+            <td>
+                {{subject.level}}
+            </td>
+            <td>
+                {{ subject.fees | number }}
+            </td>
+            <td>
+                <i-bs name="pencil-square"></i-bs>
+                <i-bs name="trash2"></i-bs>
+            </td>
+        </tr>
+    </tbody>
+</table>
