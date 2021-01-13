@@ -30,4 +30,31 @@ export class HttpService {
       .get<any>('/v1/lessons', { headers: this.headers, params })
       .toPromise();
   }
+
+  async addLesson(payload) {
+    return await this.http
+      .post<any>('/v1/lessons', payload, {
+        headers: this.headers,
+        observe: 'response',
+      })
+      .toPromise();
+  }
+
+  async updateLesson(id, payload): Promise<any> {
+    return await this.http
+      .put<any>(`/v1/lessons/${id}`, payload, {
+        headers: this.headers,
+        observe: 'response',
+      })
+      .toPromise();
+  }
+
+  async deleteLesson(id): Promise<any> {
+    return await this.http
+      .delete<any>(`/v1/lessons/${id}`, {
+        headers: this.headers,
+        observe: 'response',
+      })
+      .toPromise();
+  }
 }
