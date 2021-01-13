@@ -1,0 +1,30 @@
+<div class="modal-header">
+    <h4 class="modal-title">Hi there!</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <form [formGroup]="subjectForm">
+        <div class="form-group">
+            <label for="name">Subject Name:</label>
+            <input type="text" class="form-control" id="name" placeholder="Enter subject" formControlName="name"
+                [value]="values.name">
+        </div>
+        <div class="form-group">
+            <label for="level">Level:</label>
+            <input type="text" class="form-control" id="level" placeholder="e.g. Primary 1, Secondary 1, etc"
+                formControlName="level">
+        </div>
+        <div class="form-group">
+            <label for="fees">Hourly Fees:</label>
+            <input type="number" class="form-control" id="fees" formControlName="fees">
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="activeModal.close(subjectForm.value)">
+        <ng-container *ngIf="values.id; else add">Edit</ng-container>
+        <ng-template #add>Add</ng-template>
+    </button>
+</div>

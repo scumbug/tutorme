@@ -20,6 +20,7 @@ import { SubjectsComponent } from './components/subjects/subjects.component';
 
 import { NgxBootstrapIconsModule } from 'ngx-bootstrap-icons';
 import { plusSquare, trash2, pencilSquare } from 'ngx-bootstrap-icons';
+import { SubjectFormComponent } from './forms/subject-form/subject-form.component';
 
 FullCalendarModule.registerPlugins([
   // register FullCalendar plugins
@@ -35,6 +36,7 @@ FullCalendarModule.registerPlugins([
     LessonsComponent,
     ProfileComponent,
     SubjectsComponent,
+    SubjectFormComponent,
   ],
   imports: [
     BrowserModule,

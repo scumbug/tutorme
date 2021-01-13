@@ -63,4 +63,31 @@ export class HttpService {
       .get<any>('/v1/subjects', { headers: this.headers })
       .toPromise();
   }
+
+  async addSubjects(payload): Promise<any> {
+    return await this.http
+      .post<any>('/v1/subjects', payload, {
+        headers: this.headers,
+        observe: 'response',
+      })
+      .toPromise();
+  }
+
+  async updateSubject(id, payload): Promise<any> {
+    return await this.http
+      .put<any>(`/v1/subjects/${id}`, payload, {
+        headers: this.headers,
+        observe: 'response',
+      })
+      .toPromise();
+  }
+
+  async deleteSubject(id): Promise<any> {
+    return await this.http
+      .delete<any>(`/v1/subjects/${id}`, {
+        headers: this.headers,
+        observe: 'response',
+      })
+      .toPromise();
+  }
 }

@@ -14,6 +14,7 @@ const routes: Routes = [
   {
     path: 'subjects',
     component: SubjectsComponent,
+    canActivate: [AuthService],
   },
   { path: 'lessons', component: LessonsComponent, canActivate: [AuthService] },
   { path: '**', redirectTo: '/', pathMatch: 'full' },

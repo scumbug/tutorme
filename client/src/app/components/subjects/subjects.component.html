@@ -1,11 +1,18 @@
+<div class="row">
+    <div class="col-2">
+        <h2>Subjects</h2>
+    </div>
+    <div class="col">
+        <button (click)="open()" type="button" class="btn btn-primary">Add</button>
+    </div>
+</div>
 <table class="table table-striped">
     <thead>
         <tr>
             <th scope="col">Name</th>
             <th scope="col">Level</th>
-            <th scope="col">Fees</th>
+            <th scope="col">Hourly Fees</th>
             <th scope="col">
-                <i-bs name="plus-square"></i-bs>
             </th>
         </tr>
     </thead>
@@ -21,8 +28,13 @@
                 {{ subject.fees | number }}
             </td>
             <td>
-                <i-bs name="pencil-square"></i-bs>
-                <i-bs name="trash2"></i-bs>
+                <button class="btn btn-primary btn-success">
+                    <i-bs name=" pencil-square" (click)="open(i)"></i-bs>
+                </button>&nbsp;
+                <button class="btn btn-warning">
+                    <i-bs name="trash2" (click)="delete(subject.id)"></i-bs>
+                </button>
+
             </td>
         </tr>
     </tbody>
