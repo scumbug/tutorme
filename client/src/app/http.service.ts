@@ -42,10 +42,14 @@ export class HttpService {
 
   async updateLesson(id, payload): Promise<any> {
     return await this.http
-      .put<any>(`/v1/lessons/${id}`, payload, {
-        headers: this.headers,
-        observe: 'response',
-      })
+      .put<any>(
+        `/v1/lessons/${id}`,
+        { ...payload, id },
+        {
+          headers: this.headers,
+          observe: 'response',
+        }
+      )
       .toPromise();
   }
 
@@ -75,16 +79,59 @@ export class HttpService {
 
   async updateSubject(id, payload): Promise<any> {
     return await this.http
-      .put<any>(`/v1/subjects/${id}`, payload, {
-        headers: this.headers,
-        observe: 'response',
-      })
+      .put<any>(
+        `/v1/subjects/${id}`,
+        { ...payload, id },
+        {
+          headers: this.headers,
+          observe: 'response',
+        }
+      )
       .toPromise();
   }
 
   async deleteSubject(id): Promise<any> {
     return await this.http
       .delete<any>(`/v1/subjects/${id}`, {
+        headers: this.headers,
+        observe: 'response',
+      })
+      .toPromise();
+  }
+
+  async getUser(id): Promise<any> {
+    return await this.http
+      .get<any>(`/v1/users/${id}`, {
+        headers: this.headers,
+      })
+      .toPromise();
+  }
+
+  async updateUser(id, payload): Promise<any> {
+    return await this.http
+      .put<any>(
+        `/v1/users/${id}`,
+        { ...payload, id },
+        {
+          headers: this.headers,
+          observe: 'response',
+        }
+      )
+      .toPromise();
+  }
+
+  async addUser(payload): Promise<any> {
+    return await this.http
+      .post<any>('/v1/users', payload, {
+        headers: this.headers,
+        observe: 'response',
+      })
+      .toPromise();
+  }
+
+  async deleteUser(id): Promise<any> {
+    return await this.http
+      .delete<any>(`/v1/users/${id}`, {
         headers: this.headers,
         observe: 'response',
       })

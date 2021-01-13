@@ -17,8 +17,10 @@ export class SubjectFormComponent implements OnInit {
     this.subjectForm = this.fb.group({
       name: this.fb.control(this.values.name || '', [Validators.required]),
       level: this.fb.control(this.values.level || '', [Validators.required]),
-      fees: this.fb.control(this.values.fees || 0, [Validators.required]),
-      id: this.values.id || '',
+      fees: this.fb.control(parseInt(this.values.fees) || 0, [
+        Validators.required,
+      ]),
+      id: parseInt(this.values.id) || null,
     });
   }
 }

@@ -6,7 +6,6 @@ import { AppComponent } from './app.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
 import { LessonsComponent } from './components/lessons/lessons.component';
-import { ProfileComponent } from './components/profile/profile.component';
 import { AuthService } from './auth.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LandingComponent } from './components/landing/landing.component';
@@ -21,6 +20,14 @@ import { SubjectsComponent } from './components/subjects/subjects.component';
 import { NgxBootstrapIconsModule } from 'ngx-bootstrap-icons';
 import { plusSquare, trash2, pencilSquare } from 'ngx-bootstrap-icons';
 import { SubjectFormComponent } from './forms/subject-form/subject-form.component';
+import {
+  TippyModule,
+  tooltipVariation,
+  popperVariation,
+} from '@ngneat/helipopper';
+import { AdminService } from './admin.service';
+import { UserFormComponent } from './forms/user-form/user-form.component';
+import { StudentsComponent } from './components/students/students.component';
 
 FullCalendarModule.registerPlugins([
   // register FullCalendar plugins
@@ -34,9 +41,10 @@ FullCalendarModule.registerPlugins([
     LoginComponent,
     LandingComponent,
     LessonsComponent,
-    ProfileComponent,
     SubjectsComponent,
     SubjectFormComponent,
+    UserFormComponent,
+    StudentsComponent,
   ],
   imports: [
     BrowserModule,
@@ -47,8 +55,15 @@ FullCalendarModule.registerPlugins([
     ReactiveFormsModule,
     FullCalendarModule,
     NgxBootstrapIconsModule.pick({ plusSquare, trash2, pencilSquare }),
+    TippyModule.forRoot({
+      defaultVariation: 'tooltip',
+      variations: {
+        tooltip: tooltipVariation,
+        popper: popperVariation,
+      },
+    }),
   ],
-  providers: [AuthService, HttpService],
+  providers: [AuthService, HttpService, AdminService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -20,7 +20,7 @@ export class SubjectsComponent implements OnInit {
 
   open(i = null) {
     const modalRef = this.modal.open(SubjectFormComponent);
-    modalRef.componentInstance.values = this.subjects[i] || '';
+    modalRef.componentInstance.values = i == null ? '' : this.subjects[i];
     modalRef.result.then((result) => {
       if (result.name && !result.id) {
         this.backend.addSubjects(result).then((res) => {

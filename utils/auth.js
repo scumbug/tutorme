@@ -7,9 +7,11 @@ const sql = require('../utils/sql');
 
 const SQL_AUTHENTICATE =
 	'SELECT count(*) as auth FROM users WHERE username = ? AND password = sha1(?)';
+const SQL_PERMISSION = 'SELECT role,id FROM users WHERE username = ?';
 
 const config = async (db, SECRET, ISSUER) => {
 	const getAuth = sql.mkQuery(SQL_AUTHENTICATE, db);
+	const getPermission = sql.mkQuery(SQL_PERMISSION, db);
 
 	// Declare JWT auth strat
 	let opts = {
@@ -34,10 +36,12 @@ const config = async (db, SECRET, ISSUER) => {
 				//do auth here
 				const [flag] = await getAuth([user, pwd]);
 				if (flag.auth) {
-					console.log('here');
+					const [result] = await getPermission([user]);
 					done(null, {
 						username: user,
 						logintime: new Date(),
+						role: result.role,
+						id: result.id,
 					});
 				} else done('salah logins', false);
 			}

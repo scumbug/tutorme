@@ -1,6 +1,6 @@
 <div class="row justify-content-between align-items-center mb-2">
     <div class="col-1">
-        <h2>Subjects</h2>
+        <h2>Students</h2>
     </div>
     <div class="col-1">
         <button (click)="open()" type="button" class="btn btn-primary">Add</button>
@@ -11,30 +11,38 @@
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>
+                    <th scope="col">Username</th>
                     <th scope="col">Name</th>
-                    <th scope="col">Level</th>
-                    <th scope="col">Hourly Fees</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Address</th>
                     <th scope="col" class="text-center">Utilities
                     </th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor=" let subject of subjects; index as i">
+                <tr *ngFor=" let student of users; index as i">
                     <td>
-                        {{ subject.name }}
+                        {{ student.username }}
                     </td>
                     <td>
-                        {{subject.level}}
+                        {{student.name}}
                     </td>
                     <td>
-                        {{ subject.fees | number }}
+                        {{ student.phone }}
+                    </td>
+                    <td>
+                        {{ student.email }}
+                    </td>
+                    <td>
+                        {{ student.address  }}
                     </td>
                     <td class="text-center">
                         <button class="btn btn-primary btn-success">
                             <i-bs name=" pencil-square" (click)="open(i)"></i-bs>
                         </button>&nbsp;
                         <button class="btn btn-warning">
-                            <i-bs name="trash2" (click)="delete(subject.id)"></i-bs>
+                            <i-bs name="trash2" (click)="delete(student.id)"></i-bs>
                         </button>
 
                     </td>

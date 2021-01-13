@@ -10,6 +10,8 @@ import { Cred } from './model.interface';
 @Injectable()
 export class AuthService {
   private token = '';
+  private role;
+  private id;
   constructor(private http: HttpClient, private router: Router) {}
 
   async login(credentials: Cred): Promise<boolean> {
@@ -19,6 +21,8 @@ export class AuthService {
         .toPromise();
       if (res.status == 200) {
         this.token = res.body.token;
+        this.role = res.body.role;
+        this.id = res.body.id;
         return true;
       }
     } catch (error) {
@@ -30,8 +34,16 @@ export class AuthService {
     return this.token != '';
   }
 
+  isAdmin() {
+    return this.role == 2;
+  }
+
   getToken() {
     return this.token;
+  }
+
+  getID() {
+    return this.id;
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {

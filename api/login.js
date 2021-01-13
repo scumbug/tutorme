@@ -10,8 +10,15 @@ module.exports = (SECRET, ISSUER) => {
 		express.json(),
 		auth.authenticate('local'),
 		(req, res) => {
-			const token = auth.makeJWT(req.user, ISSUER, SECRET);
-			res.status(200).json({ message: 'ok', token: token });
+			const token = auth.makeJWT(req.user.username, ISSUER, SECRET);
+			res
+				.status(200)
+				.json({
+					message: 'ok',
+					token: token,
+					role: req.user.role,
+					id: req.user.id,
+				});
 		}
 	);
 

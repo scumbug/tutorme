@@ -8,7 +8,7 @@ import {
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpService } from 'src/app/http.service';
 import { Title, User } from 'src/app/model.interface';
-import tippy from 'tippy.js';
+import { TippyService, TippyInstance } from '@ngneat/helipopper';
 
 @Component({
   selector: 'app-lessons',
@@ -19,6 +19,7 @@ export class LessonsComponent implements OnInit {
   @ViewChild('calendar') calendarComponent: FullCalendarComponent;
   @ViewChild('content') content;
 
+  popover: TippyInstance;
   closeResult = '';
   lessonForm: FormGroup;
   start = { hour: 12, minute: 0 };
@@ -29,7 +30,8 @@ export class LessonsComponent implements OnInit {
   constructor(
     private modal: NgbModal,
     private fb: FormBuilder,
-    private backend: HttpService
+    private backend: HttpService,
+    private tippy: TippyService
   ) {}
 
   ngOnInit(): void {
@@ -57,9 +59,9 @@ export class LessonsComponent implements OnInit {
       );
     },
     headerToolbar: {
-      left: 'prev today',
+      left: 'today',
       center: 'title',
-      right: 'next',
+      right: 'prev next',
     },
     editable: true,
     selectable: true,
@@ -137,9 +139,6 @@ export class LessonsComponent implements OnInit {
   }
 
   handlePopover(args) {
-    tippy(args.el, {
-      content: args.event.title,
-      theme: 'light-border',
-    });
+    this.popover = this.tippy.create(args.el, args.event.title);
   }
 }

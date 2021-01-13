@@ -8,7 +8,7 @@ const { parse, set } = require('date-fns');
 
 const SQL_GET_LESSONS = 'SELECT * FROM schedule WHERE start BETWEEN ? AND ?';
 const SQL_GET_LESSON = 'SELECT * FROM schedule WHERE id = ?';
-const SQL_UNIQ_LESSON = `SELECT start, end FROM lessons WHERE tutee = ? AND (start BETWEEN ? AND ?)`;
+const SQL_UNIQ_LESSON = `SELECT start, end FROM lessons WHERE start BETWEEN ? AND ?`;
 const SQL_INSERT_LESSON = 'INSERT INTO lessons SET ?';
 const SQL_UPDATE_LESSON = 'UPDATE lessons SET ? WHERE id = ?';
 const SQL_DELETE_LESSON = 'DELETE FROM lessons WHERE id = ?';
@@ -73,7 +73,7 @@ module.exports = (db) => {
 					minutes: req.body.endTime.minute,
 				});
 
-				const result = await lessonClash([req.body.tutee, start, end]);
+				const result = await lessonClash([start, end]);
 
 				if (clashCheck(start, end, result)) {
 					res.status(403).json({ message: 'There is already a lesson!' });
@@ -112,9 +112,11 @@ module.exports = (db) => {
 					minutes: req.body.endTime.minute,
 				});
 
-				const result = await lessonClash([req.body.tutee, start, end]);
+				const result = await lessonClash([start, end]);
 
-				if (clashCheck(start, end, result)) {
+				console.log(req.body);
+
+				if (clashCheck(start, end, result) && req.body.id != req.params.id) {
 					res.status(403).json({ message: 'There is already a lesson!' });
 				} else {
 					await updateLesson([

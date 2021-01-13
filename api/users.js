@@ -3,11 +3,12 @@ const auth = require('../utils/auth');
 const sql = require('../utils/sql');
 const sha1 = require('sha1');
 
-const SQL_GET_USERS = 'SELECT * FROM v_users';
+const SQL_GET_USERS = 'SELECT * FROM v_users WHERE role = 1';
 const SQL_GET_USER = 'SELECT * FROM v_users WHERE id = ?';
 const SQL_INSERT_USER = 'INSERT INTO users SET ?';
 const SQL_UNIQ_USER = 'SELECT count(*) AS dup FROM v_users WHERE username = ?';
 const SQL_UPDATE_USER = 'UPDATE users SET ? WHERE id = ?';
+const SQL_DELETE_USER = 'DELETE FROM users WHERE id = ?';
 
 module.exports = (db) => {
 	const router = express.Router();
@@ -17,6 +18,7 @@ module.exports = (db) => {
 	const insertUser = sql.mkQuery(SQL_INSERT_USER, db);
 	const dupUserCheck = sql.mkQuery(SQL_UNIQ_USER, db);
 	const updateUser = sql.mkQuery(SQL_UPDATE_USER, db);
+	const deleteUser = sql.mkQuery(SQL_DELETE_USER, db);
 
 	// GET retreive all users
 	router.get('/users', auth.authenticate('jwt'), async (req, res) => {
@@ -39,9 +41,11 @@ module.exports = (db) => {
 		express.json(),
 		auth.authenticate('jwt'),
 		async (req, res) => {
+			console.log(req.body);
 			// Create new user
 			let payload = req.body;
 			payload.password = sha1(payload.password);
+			delete payload.id;
 
 			// Generate payload
 			try {
@@ -64,7 +68,7 @@ module.exports = (db) => {
 		try {
 			const result = await getUser([req.params.id]);
 			if (!!result.length) {
-				res.status(200).json(await getUser([req.params.id]));
+				res.status(200).json(result[0]);
 			} else res.status(404).json({ message: 'User not found!' });
 		} catch (e) {
 			res.status(500).json(e);
@@ -78,14 +82,31 @@ module.exports = (db) => {
 		auth.authenticate('jwt'),
 		async (req, res) => {
 			// Generate payload
+			console.log(req.body);
 			let payload = req.body;
-			delete payload.username;
-			payload.password = sha1(payload.password);
+			if (payload.password != '') payload.password = sha1(payload.password);
+			else delete payload.password;
 
 			try {
 				res.status(200).json(await updateUser([payload, req.params.id]));
 			} catch (e) {
 				res.status(500).json(e);
+			}
+		}
+	);
+
+	// DELETE user
+	router.delete(
+		'/users/:id',
+		express.json(),
+		auth.authenticate('jwt'),
+		async (req, res) => {
+			try {
+				await deleteUser(req.params.id);
+				res.status(200).json({ message: 'User deleted successfully' });
+			} catch (error) {
+				res.status(500).json(e);
+				console.log(e);
 			}
 		}
 	);

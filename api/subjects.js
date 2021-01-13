@@ -4,7 +4,8 @@ const auth = require('../utils/auth');
 
 const SQL_GET_SUBJECTS = 'SELECT * FROM subjects';
 const SQL_GET_SUBJECT = 'SELECT * FROM subjects WHERE id = ?';
-const SQL_UNIQ_SUBJECT = 'SELECT count(*) AS dup FROM subjects WHERE name = ?';
+const SQL_UNIQ_SUBJECT =
+	'SELECT count(*) AS dup FROM subjects WHERE (name = ? AND level = ?)';
 const SQL_INSERT_SUBJECT = 'INSERT INTO subjects SET ?';
 const SQL_UPDATE_SUBJECT = 'UPDATE subjects SET ? WHERE id = ?';
 const SQL_DELETE_SUBJECT = 'DELETE FROM subjects WHERE id = ?';
@@ -56,7 +57,7 @@ module.exports = (db) => {
 			// Create new user
 			try {
 				if (req.body.id == '') delete req.body.id; // clean up JSON for new subject
-				const [flag] = await dupSubCheck(req.body.name);
+				const [flag] = await dupSubCheck([req.body.name, req.body.level]);
 				if (flag.dup > 0) {
 					res.status(403).json({ message: 'Duplicated subject!' });
 				} else {
