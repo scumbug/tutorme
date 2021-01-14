@@ -16,6 +16,7 @@ const SQL_INSERT_LESSON = 'INSERT INTO lessons SET ?';
 const SQL_UPDATE_LESSON = 'UPDATE lessons SET ? WHERE id = ?';
 const SQL_DELETE_LESSON = 'DELETE FROM lessons WHERE id = ?';
 const SQL_GET_SUBJECT_NAME = 'SELECT name FROM subjects WHERE id = ?';
+const SQL_GET_STUDENT_EMAIL = 'SELECT email FROM users WHERE id = ?';
 
 module.exports = (db) => {
 	const router = express.Router();
@@ -32,22 +33,7 @@ module.exports = (db) => {
 	const updateLesson = sql.mkQuery(SQL_UPDATE_LESSON, db);
 	const deleteLesson = sql.mkQuery(SQL_DELETE_LESSON, db);
 	const getSubjectName = sql.mkQuery(SQL_GET_SUBJECT_NAME, db);
-
-	router.get('/testmail', async (req, res) => {
-		mg.messages
-			.create(process.env.MAILGUN_DOMAIN, {
-				from: `Excited User <mailgun@${process.env.MAILGUN_DOMAIN}>`,
-				to: ['chunsiang10@gmail.com'],
-				subject: 'Hello',
-				text: 'Testing some Mailgun awesomness!',
-				html: '<h1>Testing some Mailgun awesomness!</h1>',
-			})
-			.then((msg) => {
-				console.log(msg);
-				res.status(200).json({ message: 'test' });
-			})
-			.catch((err) => console.log(err));
-	});
+	const getStudentEmail = sql.mkQuery(SQL_GET_STUDENT_EMAIL, db);
 
 	// GET all lessons
 	router.get('/lessons', auth.authenticate('jwt'), async (req, res) => {
@@ -113,7 +99,7 @@ module.exports = (db) => {
 				if (clashCheck(start, end, result) || start > end) {
 					res.status(403).json({
 						message:
-							'Either there is already lesson or your selcted timing does not make sense',
+							'Either there is already lesson or your selected timing does not make sense',
 					});
 				} else {
 					await insertLesson({
@@ -124,15 +110,17 @@ module.exports = (db) => {
 					});
 
 					const [subjectName] = await getSubjectName([req.body.title]);
+					const [email] = await getStudentEmail([req.body.tutee]);
+					console.log(email);
 
 					// to be destructured
 					await mg.messages.create(process.env.MAILGUN_DOMAIN, {
-						from: `TutorMe <mailgun@${process.env.MAILGUN_DOMAIN}>`,
-						to: ['chunsiang10@gmail.com'],
+						from: `TutorMe <tutorme@${process.env.MAILGUN_DOMAIN}>`,
+						to: [email.email],
 						subject: 'New Lesson Scheduled',
 						text: `You have a new lesson scheduled, here are the details \n
 							${subjectName.name} \n
-							Start: ${start}
+							Start: ${start} \n
 							End: ${end}
 							`,
 						html: `<h1><p>You have a new lesson scheduled</p></h1>
