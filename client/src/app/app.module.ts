@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { Injectable, NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -14,6 +14,8 @@ import { LoginComponent } from './components/login/login.component';
 import { FullCalendarModule } from '@fullcalendar/angular'; // the main connector. must go first
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import listPlugin from '@fullcalendar/list';
+
 import { HttpService } from './http.service';
 import { SubjectsComponent } from './components/subjects/subjects.component';
 
@@ -28,12 +30,30 @@ import {
 import { AdminService } from './admin.service';
 import { UserFormComponent } from './forms/user-form/user-form.component';
 import { StudentsComponent } from './components/students/students.component';
+import { LessonsStudentComponent } from './components/lessons-student/lessons-student.component';
+import {
+  LAZY_MAPS_API_CONFIG,
+  LazyMapsAPILoaderConfigLiteral,
+  AgmCoreModule,
+} from '@agm/core';
+import { ResourcesComponent } from './components/resources/resources.component';
+import { QuestionsFormComponent } from './forms/questions-form/questions-form.component';
 
 FullCalendarModule.registerPlugins([
   // register FullCalendar plugins
   dayGridPlugin,
   interactionPlugin,
+  listPlugin,
 ]);
+
+@Injectable()
+export class GoogleMapsConfig implements LazyMapsAPILoaderConfigLiteral {
+  public apiKey: string = '';
+  public libraries = ['places'];
+  constructor(private http: HttpService) {
+    this.http.getMapsKey().then((res) => console.log(res));
+  }
+}
 
 @NgModule({
   declarations: [
@@ -45,6 +65,9 @@ FullCalendarModule.registerPlugins([
     SubjectFormComponent,
     UserFormComponent,
     StudentsComponent,
+    LessonsStudentComponent,
+    ResourcesComponent,
+    QuestionsFormComponent,
   ],
   imports: [
     BrowserModule,
@@ -62,8 +85,14 @@ FullCalendarModule.registerPlugins([
         popper: popperVariation,
       },
     }),
+    AgmCoreModule.forRoot({}),
   ],
-  providers: [AuthService, HttpService, AdminService],
+  providers: [
+    AuthService,
+    HttpService,
+    AdminService,
+    { provide: LAZY_MAPS_API_CONFIG, useClass: GoogleMapsConfig },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

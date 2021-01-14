@@ -24,8 +24,11 @@ export class HttpService {
       .toPromise();
   }
 
-  async getLessonFeed(start, end) {
-    const params = new HttpParams().set('start', start).set('end', end);
+  async getLessonFeed(start, end, id = null) {
+    const params = new HttpParams()
+      .set('start', start)
+      .set('end', end)
+      .set('id', id);
     return await this.http
       .get<any>('/v1/lessons', { headers: this.headers, params })
       .toPromise();
@@ -135,6 +138,24 @@ export class HttpService {
         headers: this.headers,
         observe: 'response',
       })
+      .toPromise();
+  }
+
+  async getMapsKey(): Promise<any> {
+    return await this.http
+      .get<any>('/v1/mapskey', { headers: this.headers })
+      .toPromise();
+  }
+
+  async getQuestions(): Promise<any> {
+    return await this.http
+      .get<any>('/v1/questions', { headers: this.headers })
+      .toPromise();
+  }
+
+  async addQuestions(payload): Promise<any> {
+    return await this.http
+      .post<any>('/v1/questions', payload, { headers: this.headers })
       .toPromise();
   }
 }

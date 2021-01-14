@@ -2,12 +2,14 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AdminService } from './admin.service';
 import { AuthService } from './auth.service';
+import { LessonsStudentComponent } from './components/lessons-student/lessons-student.component';
 import { LandingComponent } from './components/landing/landing.component';
 import { LessonsComponent } from './components/lessons/lessons.component';
 import { LoginComponent } from './components/login/login.component';
 import { StudentsComponent } from './components/students/students.component';
 import { SubjectsComponent } from './components/subjects/subjects.component';
 import { UserFormComponent } from './forms/user-form/user-form.component';
+import { ResourcesComponent } from './components/resources/resources.component';
 
 const routes: Routes = [
   { path: '', component: LandingComponent, canActivate: [AuthService] },
@@ -18,6 +20,11 @@ const routes: Routes = [
     canActivate: [AuthService],
   },
   {
+    path: 'lessons-student/:id',
+    component: LessonsStudentComponent,
+    canActivate: [AuthService],
+  },
+  {
     path: 'subjects',
     component: SubjectsComponent,
     canActivate: [AuthService, AdminService],
@@ -25,6 +32,11 @@ const routes: Routes = [
   {
     path: 'lessons',
     component: LessonsComponent,
+    canActivate: [AuthService, AdminService],
+  },
+  {
+    path: 'resources',
+    component: ResourcesComponent,
     canActivate: [AuthService, AdminService],
   },
   {

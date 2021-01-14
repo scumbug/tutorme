@@ -12,6 +12,11 @@ import { Cred } from 'src/app/model.interface';
 export class LoginComponent implements OnInit {
   login: FormGroup;
 
+  latitude: number;
+  longitude: number;
+  zoom: number;
+  address: string;
+
   constructor(
     private auth: AuthService,
     private router: Router,

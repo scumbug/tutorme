@@ -82,10 +82,18 @@ module.exports = (db) => {
 		auth.authenticate('jwt'),
 		async (req, res) => {
 			// Generate payload
-			console.log(req.body);
 			let payload = req.body;
 			if (payload.password != '') payload.password = sha1(payload.password);
 			else delete payload.password;
+			if (payload.username == null) delete payload.username;
+
+			// delete address details if no change
+			if (payload.longitude == '' || payload.latitude == '') {
+				delete payload.longitude;
+				delete payload.latitude;
+				delete payload.address;
+				delete payload.unit;
+			}
 
 			try {
 				res.status(200).json(await updateUser([payload, req.params.id]));

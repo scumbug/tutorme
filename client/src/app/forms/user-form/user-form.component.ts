@@ -1,4 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { MapsAPILoader } from '@agm/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  NgZone,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -14,12 +22,29 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class UserFormComponent implements OnInit {
   @Input() values;
+  @ViewChild('search')
+  public searchElementRef: ElementRef;
+
   admin: boolean;
   userForm: FormGroup;
   username: FormControl;
-  constructor(public activeModal: NgbActiveModal, private fb: FormBuilder) {}
+  latitude: number;
+  longitude: number;
+  zoom: number;
+  address: string;
+
+  constructor(
+    public activeModal: NgbActiveModal,
+    private fb: FormBuilder,
+    private mapsAPILoader: MapsAPILoader,
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit(): void {
+    console.log(this.values.longitude);
+    this.longitude = this.values.longitude || null;
+    this.latitude = this.values.latitude || null;
+
     this.userForm = this.fb.group({
       name: this.fb.control(this.values.name || '', [Validators.required]),
       phone: this.fb.control(this.values.phone || '', [
@@ -31,13 +56,14 @@ export class UserFormComponent implements OnInit {
         Validators.required,
         Validators.email,
       ]),
-      address: this.fb.control(this.values.address || '', [
-        Validators.required,
-      ]),
+      address: this.values.address,
       role: this.values.role || 1, //always 1, admin added via SQL
       id: this.values.id || null,
       password: this.fb.control(''),
       username: this.username,
+      unit: this.fb.control(this.values.unit || '', [Validators.required]),
+      longitude: '',
+      latitude: '',
     });
 
     if (!this.values.id) {
@@ -46,5 +72,34 @@ export class UserFormComponent implements OnInit {
         Validators.pattern('.*\\S.*[a-zA-z0-9_-]'),
       ]);
     }
+
+    //load Places Autocomplete
+    this.mapsAPILoader.load().then(() => {
+      let autocomplete = new google.maps.places.Autocomplete(
+        this.searchElementRef.nativeElement
+      );
+      autocomplete.addListener('place_changed', () => {
+        this.ngZone.run(() => {
+          //get the place result
+          let place: google.maps.places.PlaceResult = autocomplete.getPlace();
+
+          //verify result
+          if (place.geometry === undefined || place.geometry === null) {
+            return;
+          }
+
+          //set latitude, longitude and zoom
+          this.latitude = place.geometry.location.lat();
+          this.longitude = place.geometry.location.lng();
+          this.address = place.formatted_address;
+          this.zoom = 12;
+
+          //set form
+          this.userForm.get('latitude').setValue(this.latitude);
+          this.userForm.get('longitude').setValue(this.longitude);
+          this.userForm.get('address').setValue(this.address);
+        });
+      });
+    });
   }
 }
