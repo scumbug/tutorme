@@ -1,23 +1,22 @@
 <div class="row justify-content-between align-items-center mb-2">
-    <div class="col-1">
+    <div class="col-8">
         <h2>Questions Repository</h2>
     </div>
     <div class="col-1">
         <button (click)="open()" type="button" class="btn btn-primary">Add</button>
     </div>
 </div>
-<div class="row justify-content-center">
-    <div class="card mb-3" style="max-width: 540px;" *ngFor="let question of questions">
-        <div class="row no-gutters">
-            <div class="col-md-4">
-                <img src="{{question.url}}" class="card-img">
-            </div>
-            <div class="col-md-8">
-                <div class="card-body">
-                    <h5 class="card-title">{{question.name}}</h5>
-                    <button type="button">Enlarge Image</button>
-                </div>
+<div class="row row-cols-1 row-cols-md-1">
+
+
+    <div class="col mb-4" *ngFor="let question of questions">
+        <div class="card h-100">
+            <img src="{{question.url}}" class="card-img-top">
+            <div class="card-body">
+                <h5 class="card-title">{{question.name}}</h5>
             </div>
         </div>
     </div>
+
+
 </div>

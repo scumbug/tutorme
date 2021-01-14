@@ -19,39 +19,39 @@ export class StudentsComponent implements OnInit {
   open(i = null) {
     const modalRef = this.modal.open(UserFormComponent);
     modalRef.componentInstance.values = i == null ? '' : this.users[i];
-    modalRef.result.then((result) => {
-      if (result.name && !result.id) {
-        this.backend.addUser(result).then((res) => {
-          if (res.status == 200) {
-            // update table
-            this.backend.getTutees().then((res) => (this.users = res));
-          } else {
-            alert(res);
-          }
-        });
-      } else if (result.name && result.id) {
-        this.backend.updateUser(result.id, result).then((res) => {
-          if (res.status == 200) {
-            // update table
-            this.backend.getTutees().then((res) => (this.users = res));
-          } else {
-            console.log(res);
-          }
-        });
-      } else {
-        alert('close box');
-      }
-    });
+    modalRef.result
+      .then((result) => {
+        if (result.name && !result.id) {
+          this.backend
+            .addUser(result)
+            .then((res) => {
+              // update table
+              if (res.status == 200)
+                this.backend.getTutees().then((res) => (this.users = res));
+            })
+            .catch((e) => alert(e.error.message));
+        } else if (result.name && result.id) {
+          this.backend
+            .updateUser(result.id, result)
+            .then((res) => {
+              // update table
+              if (res.status == 200)
+                this.backend.getTutees().then((res) => (this.users = res));
+            })
+            .catch((e) => alert(e.error.message));
+        }
+      })
+      .catch((e) => null);
   }
 
   delete(id) {
-    this.backend.deleteUser(id).then((res) => {
-      if (res.status != 200) {
-        console.log(res);
-      } else {
+    this.backend
+      .deleteUser(id)
+      .then((res) => {
         // update table
-        this.backend.getTutees().then((res) => (this.users = res));
-      }
-    });
+        if (res.status == 200)
+          this.backend.getTutees().then((res) => (this.users = res));
+      })
+      .catch((e) => alert(e.error.message));
   }
 }

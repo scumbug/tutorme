@@ -3,14 +3,14 @@
 <ng-template #content let-modal>
     <div class="modal-header">
         <h4 class="modal-title" id="modal-basic-title">Profile update</h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
-            <span aria-hidden="true">&times;</span>
+        <button type="button" class="close" (click)="modal.dismiss()">
+            &times;
         </button>
     </div>
     <div class="modal-body">
         <form [formGroup]='lessonForm'>
 
-            <h3>Create a Lesson for {{ this.lessonForm.get('date').value}}</h3>
+            <h3>Create/Update a Lesson</h3>
 
             <div class="form-group">
                 <label for="title">Title: </label>
@@ -44,6 +44,3 @@
         <button type="button" class="btn btn-outline-dark" (click)="modal.close('submit')">Save</button>
     </div>
 </ng-template>
-
-<ng-template #popContent let-greeting="greeting">my greet!</ng-template>
-<ng-template #popTitle let-language="language">greet you</ng-template>

@@ -110,8 +110,11 @@ module.exports = (db) => {
 
 				const result = await lessonClash([start, end]);
 
-				if (clashCheck(start, end, result)) {
-					res.status(403).json({ message: 'There is already a lesson!' });
+				if (clashCheck(start, end, result) || start > end) {
+					res.status(403).json({
+						message:
+							'Either there is already lesson or your selcted timing does not make sense',
+					});
 				} else {
 					await insertLesson({
 						subject: req.body.title,
@@ -170,8 +173,14 @@ module.exports = (db) => {
 
 				console.log(req.body);
 
-				if (clashCheck(start, end, result) && req.body.id != req.params.id) {
-					res.status(403).json({ message: 'There is already a lesson!' });
+				if (
+					(clashCheck(start, end, result) && req.body.id != req.params.id) ||
+					start > end
+				) {
+					res.status(403).json({
+						message:
+							'Either there is already lesson or your selcted timing does not make sense',
+					});
 				} else {
 					await updateLesson([
 						{

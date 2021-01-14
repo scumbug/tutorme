@@ -41,7 +41,6 @@ export class UserFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log(this.values.longitude);
     this.longitude = this.values.longitude || null;
     this.latitude = this.values.latitude || null;
 

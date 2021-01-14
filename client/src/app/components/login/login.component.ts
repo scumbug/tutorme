@@ -32,7 +32,6 @@ export class LoginComponent implements OnInit {
   }
 
   async doLogin() {
-    console.log(this.login.value as Cred);
     await this.auth.login(this.login.value as Cred);
     this.router.navigate(['/landing']);
   }

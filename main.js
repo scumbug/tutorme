@@ -47,8 +47,11 @@ app.use('/v1/mapskey', (req, res) => {
 	res.status(200).json({ mapskey: process.env.MAPS_API || null });
 });
 
+// mount frontend
+app.use(express.static(__dirname + '/frontend'));
+
 // Start server
-Promise.all([sql.check(db)])
+Promise.all([sql.check(db), aws.check()])
 	.then(() => {
 		app.listen(
 			PORT,

@@ -63,7 +63,7 @@ export class LessonsComponent implements OnInit {
       center: 'title',
       right: 'prev next',
     },
-    editable: true,
+    editable: false,
     selectable: true,
     eventClick: this.handleEventClick.bind(this),
     select: this.handleDateSelect.bind(this),
@@ -81,19 +81,23 @@ export class LessonsComponent implements OnInit {
     //set date
     this.lessonForm.get('date').setValue(selectedDate.startStr);
     //open modal
-    this.modal.open(this.content).result.then((result) => {
-      if (result == 'submit') {
-        // Post to backend. If status 200 then addEvent, otherwise prompt error
-        this.backend.addLesson(this.lessonForm.value).then((res) => {
-          if (res.status == 200) {
-            // refresh calendar
-            cal.refetchEvents();
-          } else {
-            alert(res.body.message);
-          }
-        });
-      }
-    });
+    this.modal
+      .open(this.content)
+      .result.then((result) => {
+        if (result == 'submit') {
+          // Post to backend. If status 200 then addEvent, otherwise prompt error
+          this.backend
+            .addLesson(this.lessonForm.value)
+            .then((res) => {
+              if (res.status == 200) {
+                // refresh calendar
+                cal.refetchEvents();
+              }
+            })
+            .catch((e) => alert(e.error.message));
+        }
+      })
+      .catch((e) => null);
   }
 
   handleEventClick(args) {
@@ -112,33 +116,35 @@ export class LessonsComponent implements OnInit {
       date: args.event.start,
     });
     // open modal
-    this.modal.open(this.content).result.then((result) => {
-      if (result == 'submit') {
-        this.backend
-          .updateLesson(args.event.extendedProps.lid, this.lessonForm.value)
-          .then((res) => {
-            if (res.status == 200) {
-              // refresh calendar
-              args.view.calendar.refetchEvents();
-            } else {
-              alert(res.body.message);
-            }
-          });
-      } else if (result == 'delete') {
-        // delete event
-        this.backend.deleteLesson(args.event.extendedProps.lid).then((res) => {
-          if (res.status == 200) {
-            //refresh calendar
-            args.view.calendar.refetchEvents();
-          } else {
-            alert(res.body.message);
-          }
-        });
-      }
-    });
+    this.modal
+      .open(this.content)
+      .result.then((result) => {
+        if (result == 'submit') {
+          this.backend
+            .updateLesson(args.event.extendedProps.lid, this.lessonForm.value)
+            .then((res) => {
+              //refresh calendar
+              if (res.status == 200) args.view.calendar.refetchEvents();
+            })
+            .catch((e) => alert(e.error.message));
+        } else if (result == 'delete') {
+          // delete event
+          this.backend
+            .deleteLesson(args.event.extendedProps.lid)
+            .then((res) => {
+              //refresh calendar
+              if (res.status == 200) args.view.calendar.refetchEvents();
+            })
+            .catch((e) => alert(e.error.message));
+        }
+      })
+      .catch((e) => null);
   }
 
   handlePopover(args) {
-    this.popover = this.tippy.create(args.el, args.event.title);
+    this.popover = this.tippy.create(
+      args.el,
+      `Subject: ${args.event.extendedProps.description}`
+    );
   }
 }

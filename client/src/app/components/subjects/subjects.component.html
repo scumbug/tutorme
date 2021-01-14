@@ -30,11 +30,11 @@
                         {{ subject.fees | number }}
                     </td>
                     <td class="text-center">
-                        <button class="btn btn-primary btn-success">
-                            <i-bs name=" pencil-square" (click)="open(i)"></i-bs>
+                        <button class="btn btn-primary btn-success" (click)="open(i)">
+                            <i-bs name=" pencil-square"></i-bs>
                         </button>&nbsp;
-                        <button class="btn btn-warning">
-                            <i-bs name="trash2" (click)="delete(subject.id)"></i-bs>
+                        <button class="btn btn-warning" (click)="delete(subject.id)">
+                            <i-bs name="trash2"></i-bs>
                         </button>
 
                     </td>

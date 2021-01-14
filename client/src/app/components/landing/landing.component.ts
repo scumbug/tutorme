@@ -27,19 +27,21 @@ export class LandingComponent implements OnInit {
   async updateProfile() {
     const modalRef = this.modal.open(UserFormComponent);
     modalRef.componentInstance.values = this.user;
-    modalRef.result.then((result) => {
-      console.log(result);
-      this.backend.updateUser(result.id, result).then((res) => {
-        if (res.status == 200) {
-          this.backend
-            .getUser(this.auth.getID())
-            .then((res) => (this.user = res));
-
-          alert('update successful');
-        } else {
-          console.log(res);
-        }
-      });
-    });
+    modalRef.result
+      .then((result) => {
+        console.log(result);
+        this.backend
+          .updateUser(result.id, result)
+          .then((res) => {
+            if (res.status == 200) {
+              this.backend
+                .getUser(this.auth.getID())
+                .then((res) => (this.user = res));
+              alert('Update successful');
+            }
+          })
+          .catch((e) => alert(e.error.message));
+      })
+      .catch((e) => null);
   }
 }

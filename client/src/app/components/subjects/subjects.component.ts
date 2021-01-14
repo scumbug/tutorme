@@ -21,39 +21,39 @@ export class SubjectsComponent implements OnInit {
   open(i = null) {
     const modalRef = this.modal.open(SubjectFormComponent);
     modalRef.componentInstance.values = i == null ? '' : this.subjects[i];
-    modalRef.result.then((result) => {
-      if (result.name && !result.id) {
-        this.backend.addSubjects(result).then((res) => {
-          if (res.status == 200) {
-            // update table
-            this.backend.getSubjects().then((res) => (this.subjects = res));
-          } else {
-            alert(res);
-          }
-        });
-      } else if (result.name && result.id) {
-        this.backend.updateSubject(result.id, result).then((res) => {
-          if (res.status == 200) {
-            // update table
-            this.backend.getSubjects().then((res) => (this.subjects = res));
-          } else {
-            console.log(res);
-          }
-        });
-      } else {
-        alert('close box');
-      }
-    });
+    modalRef.result
+      .then((result) => {
+        if (result.name && !result.id) {
+          this.backend
+            .addSubjects(result)
+            .then((res) => {
+              // update table
+              if (res.status == 200)
+                this.backend.getSubjects().then((res) => (this.subjects = res));
+            })
+            .catch((e) => alert(e.error.message));
+        } else if (result.name && result.id) {
+          this.backend
+            .updateSubject(result.id, result)
+            .then((res) => {
+              // update table
+              if (res.status == 200)
+                this.backend.getSubjects().then((res) => (this.subjects = res));
+            })
+            .catch((e) => alert(e.error.message));
+        }
+      })
+      .catch((e) => null);
   }
 
   delete(id) {
-    this.backend.deleteSubject(id).then((res) => {
-      if (res.status != 200) {
-        console.log(res);
-      } else {
-        // update table
-        this.backend.getSubjects().then((res) => (this.subjects = res));
-      }
-    });
+    this.backend
+      .deleteSubject(id)
+      .then((res) => {
+        //update table
+        if (res.status == 200)
+          this.backend.getSubjects().then((res) => (this.subjects = res));
+      })
+      .catch((e) => alert(e.error.message));
   }
 }

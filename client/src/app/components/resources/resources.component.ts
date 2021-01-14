@@ -18,15 +18,17 @@ export class ResourcesComponent implements OnInit {
 
   open() {
     const modalRef = this.modal.open(QuestionsFormComponent);
-    modalRef.result.then((result) => {
-      this.backend.addQuestions(result).then((res) => {
-        if (res.status == 200) {
-          // update table
-          this.backend.getQuestions().then((res) => (this.questions = res));
-        } else {
-          alert(res);
-        }
-      });
-    });
+    modalRef.result
+      .then((result) => {
+        this.backend
+          .addQuestions(result)
+          .then((res) => {
+            // update table
+            if (res.status == 200)
+              this.backend.getQuestions().then((res) => (this.questions = res));
+          })
+          .catch((e) => alert(e.error.message));
+      })
+      .catch((e) => null);
   }
 }
