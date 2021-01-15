@@ -5,6 +5,7 @@ import { Subject, Title, User } from './model.interface';
 
 @Injectable()
 export class HttpService {
+  mapsLoaded: boolean = false;
   constructor(private http: HttpClient, private auth: AuthService) {}
 
   headers = new HttpHeaders().set(
@@ -157,5 +158,10 @@ export class HttpService {
     return await this.http
       .post<any>('/v1/questions', payload, { headers: this.headers })
       .toPromise();
+  }
+
+  async setApiKeyLoaded(): Promise<boolean> {
+    this.mapsLoaded = true;
+    return true;
   }
 }

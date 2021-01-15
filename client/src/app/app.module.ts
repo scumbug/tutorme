@@ -48,10 +48,13 @@ FullCalendarModule.registerPlugins([
 
 @Injectable()
 export class GoogleMapsConfig implements LazyMapsAPILoaderConfigLiteral {
-  public apiKey: string = '';
+  public apiKey: string;
   public libraries = ['places'];
   constructor(private http: HttpService) {
-    this.http.getMapsKey().then((res) => console.log(res));
+    this.http.getMapsKey().then((res) => {
+      this.apiKey = res.mapskey;
+      this.http.setApiKeyLoaded();
+    });
   }
 }
 

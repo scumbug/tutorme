@@ -14,6 +14,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { HttpService } from 'src/app/http.service';
 
 @Component({
   selector: 'app-user-form',
@@ -32,6 +33,7 @@ export class UserFormComponent implements OnInit {
   longitude: number;
   zoom: number;
   address: string;
+  mapsLoaded: boolean = false;
 
   constructor(
     public activeModal: NgbActiveModal,
